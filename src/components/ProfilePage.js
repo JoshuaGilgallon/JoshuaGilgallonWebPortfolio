@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useAnimation } from 'framer-motion';
 import { Camera, Code, Music, ChevronDown, ArrowRight, Mail, MessageCircleMore, Bird, Menu, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -7,6 +7,7 @@ const ProfilePage = () => {
   const [scrollY, setScrollY] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const controls = useAnimation();
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
@@ -20,6 +21,19 @@ const ProfilePage = () => {
       window.removeEventListener('mousemove', handleMouseMove);
     };
   }, []);
+
+  useEffect(() => {
+    const animateText = async () => {
+      while (true) {
+        await controls.start({ width: 0, opacity: 1 });
+        await controls.start({ width: '100%', transition: { duration: 1.5 } });
+        await new Promise(resolve => setTimeout(resolve, 4000));
+        await controls.start({ width: 0, transition: { duration: 0.5 } });
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+    };
+    animateText();
+  }, [controls]);
 
   const scrollToSection = (sectionId) => {
     const section = document.getElementById(sectionId);
@@ -51,25 +65,47 @@ const ProfilePage = () => {
         <nav className="flex justify-between items-center max-w-6xl mx-auto">
           <h1 className="text-2xl font-bold md:text-3xl">Joshua Gilgallon</h1>
           <div className="md:hidden">
-            <motion.button 
-              onClick={() => setIsMenuOpen(!isMenuOpen)} 
-              className="text-white"
-              whileTap={{ scale: 0.95 }}
-            >
-              <AnimatePresence mode="wait" initial={false}>
-                <motion.div
-                  key={isMenuOpen ? "close" : "menu"}
-                  initial={{ opacity: 0, rotate: -180 }}
-                  animate={{ opacity: 1, rotate: 0 }}
-                  exit={{ opacity: 0, rotate: 180 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-                </motion.div>
-              </AnimatePresence>
-            </motion.button>
-          </div>
-            <AnimatePresence>
+  <motion.button 
+    onClick={() => setIsMenuOpen(!isMenuOpen)} 
+    className="text-white"
+    whileTap={{ scale: 0.95 }}
+  >
+    <AnimatePresence mode="wait" initial={false}>
+      <motion.div
+        key={isMenuOpen ? "close" : "menu"}
+        initial={{ opacity: 0, rotate: -180 }}
+        animate={{ opacity: 1, rotate: 0 }}
+        exit={{ opacity: 0, rotate: 180 }}
+        transition={{ duration: 0.3 }}
+      >
+        {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+      </motion.div>
+    </AnimatePresence>
+  </motion.button>
+</div>
+    <AnimatePresence>
+      {(isMenuOpen || window.innerWidth >= 768) && (
+        <motion.ul
+          className="md:flex md:space-x-4 absolute md:relative top-full left-0 w-full md:w-auto bg-gray-800 md:bg-transparent p-4 md:p-0"
+          initial={{ x: "100%" }}
+          animate={{ x: 0 }}
+          exit={{ x: "100%" }}
+          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        >
+          {['about', 'interests', 'projects', 'socials'].map((section) => (
+            <li key={section}>
+              <a 
+                onClick={() => scrollToSection(section)} 
+                className="block py-2 md:py-0 hover:text-blue-400 transition-colors cursor-pointer"
+              >
+                {section.charAt(0).toUpperCase() + section.slice(1)}
+              </a>
+            </li>
+          ))}
+        </motion.ul>
+      )}
+    </AnimatePresence>            
+    <AnimatePresence>
             {isMenuOpen && (
               <motion.ul
                 className="md:flex md:space-x-4 absolute md:relative top-full left-0 w-full md:w-auto bg-gray-800 md:bg-transparent p-4 md:p-0"
@@ -95,32 +131,42 @@ const ProfilePage = () => {
       </header>
 
       <main className="pt-20 relative z-10">
-        <section id="about" className="h-screen flex flex-col justify-center items-center text-center p-4 relative">
+        <section id="about" className="h-screen flex flex-col justify-center items-center text-center p-4 relative overflow-hidden" style={{ maxHeight: '100vh' }}>
           <motion.h2 
-            className="text-4xl md:text-6xl font-bold mb-4 relative"
+            className="text-4xl md:text-6xl font-bold mb-4 relative flex items-center justify-center"
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
             <motion.span 
-              className="inline-block"
+              className="inline-block mr-2"
               whileHover={{ scale: 1.05 }}
             >
               Hello,
             </motion.span>{' '}
             <motion.span 
-              className="inline-block"
+              className="inline-block mr-2"
               whileHover={{ scale: 1.05 }}
             >
               I'm
             </motion.span>{' '}
-            <motion.span 
-              className="inline-block"
-              whileHover={{ scale: 1.05 }}
-            >
-              Josh
-            </motion.span>
+            <motion.div className="relative inline-flex items-center">
+              <motion.span
+                className="inline-block overflow-hidden whitespace-nowrap"
+                animate={controls}
+                initial={{ width: 0 }}
+                style={{ paddingLeft: "0.5rem" }}
+              >
+                Josh
+              </motion.span>
+              <motion.span
+                className="inline-block w-[2px] h-[1em] bg-white ml-[2px]"
+                animate={{ opacity: [1, 0] }}
+                transition={{ duration: 0.5, repeat: Infinity, repeatType: 'reverse' }}
+              />
+            </motion.div>
           </motion.h2>
+          
           <motion.p 
             className="text-lg md:text-xl mb-8 relative"
             initial={{ opacity: 0 }}
@@ -195,19 +241,17 @@ const ProfilePage = () => {
             </button>
           </motion.div>
 
-          <motion.div
-            className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
-            animate={{ y: [0, -10, 0] }}
-            transition={{ y: { duration: 2, repeat: Infinity, ease: 'easeInOut' } }}
-          >
-            <button 
-              onClick={() => scrollToSection('interests')} 
-              className="flex flex-col items-center text-blue-400 hover:text-blue-300 transition-colors"
-            >
-              <p className="mb-2">Scroll Down</p>
-              <ChevronDown size={24} />
-            </button>
-          </motion.div>
+          <div className="absolute bottom-20 left-0 right-0 flex justify-center">
+        <motion.button 
+          onClick={() => scrollToSection('interests')} 
+          className="flex flex-col items-center text-blue-400 hover:text-blue-300 transition-colors"
+          animate={{ y: [0, -10, 0] }}
+          transition={{ y: { duration: 2, repeat: Infinity, ease: 'easeInOut' } }}
+        >
+          <p className="mb-2">Scroll Down</p>
+          <ChevronDown size={24} />
+        </motion.button>
+      </div>        
         </section>
 
         <section id="interests" className="min-h-screen flex flex-col justify-center items-center p-4 bg-gray-800 bg-opacity-50">
@@ -223,14 +267,14 @@ const ProfilePage = () => {
             <InterestCard 
               icon={<Camera size={32} />} 
               title="Photography" 
-              description="Capturing moments and expressing creativity through images."
+              description="Showcasing automotive design and urban infrastructure."
               buttonText="View Gallery"
               to="/photography"
             />
             <InterestCard 
               icon={<Music size={32} />} 
               title="Music" 
-              description="Exploring various genres and creating my own melodies."
+              description="Exploring various genres and creating my own songs."
             />
           </div>
         </section>
@@ -318,10 +362,10 @@ const InterestCard = ({ icon, title, description, buttonText, onClick, to }) => 
 
 const ProjectList = () => {
   const projects = [
-    { title: "Project 1", description: "A brief description of your first project." },
-    { title: "Project 2", description: "A brief description of your second project." },
-    { title: "Project 3", description: "A brief description of your third project." },
-    { title: "Project 4", description: "A brief description of your fourth project." },
+    { title: "Project 1", description: "Skib skib rizz" },
+    { title: "Project 2", description: "proj 2" },
+    { title: "Project 3", description: "shoutout to onyx my sigma" },
+    { title: "Project 4", description: "and teslaboi what a baddie" },
   ];
 
   return (
