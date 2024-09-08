@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Camera, Code, Music, ChevronDown } from 'lucide-react';
+import { Camera, Code, Music, ChevronDown, ArrowRight  } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const ProfilePage = () => {
   const [scrollY, setScrollY] = useState(0);
@@ -11,15 +12,30 @@ const ProfilePage = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const scrollToAbout = () => {
+    const projectsSection = document.getElementById('about');
+    projectsSection.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const scrollToProjects = () => {
+    const projectsSection = document.getElementById('projects');
+    projectsSection.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const scrollToInterests = () => {
+    const interestsSection = document.getElementById('interests');
+    interestsSection.scrollIntoView({behavior: 'smooth'})
+  }
+
   return (
     <div className="min-h-screen bg-gray-900 text-white font-sans">
       <header className="fixed w-full bg-gray-800 p-4 z-10">
         <nav className="flex justify-between items-center max-w-6xl mx-auto">
           <h1 className="text-2xl font-bold">Joshua Gilgallon</h1>
           <ul className="flex space-x-4">
-            <li><a href="#about" className="hover:text-blue-400 transition-colors">About</a></li>
-            <li><a href="#interests" className="hover:text-blue-400 transition-colors">Interests</a></li>
-            <li><a href="#projects" className="hover:text-blue-400 transition-colors">Projects</a></li>
+            <li><a onClick={scrollToAbout} style={{ cursor: 'pointer' }} className="hover:text-blue-400 transition-colors">About</a></li>
+            <li><a onClick={scrollToInterests} style={{ cursor: 'pointer' }} className="hover:text-blue-400 transition-colors">Interests</a></li>
+            <li><a onClick={scrollToProjects} style={{ cursor: 'pointer' }} className="hover:text-blue-400 transition-colors">Projects</a></li>
             <li><a href="photography" className="hover:text-blue-400 transition-colors">Photography</a></li>
           </ul>
         </nav>
@@ -54,16 +70,30 @@ const ProfilePage = () => {
             <Music size={48} />
           </motion.div>
         </section>
-
-        <section id="interests" className="min-h-screen flex flex-col justify-center items-center p-4 bg-gray-800">
+       <section id="interests" className="min-h-screen flex flex-col justify-center items-center p-4 bg-gray-800">
           <h2 className="text-4xl font-bold mb-8">My Interests</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl">
-            <InterestCard icon={<Code size={32} />} title="Coding" description="I love creating and problem-solving through code." />
-            <InterestCard icon={<Camera size={32} />} title="Photography" description="Capturing moments and expressing creativity through images." />
-            <InterestCard icon={<Music size={32} />} title="Music" description="Exploring various genres and creating my own melodies." />
+            <InterestCard 
+              icon={<Code size={32} />} 
+              title="Coding" 
+              description="I love creating and problem-solving through code."
+              buttonText="View Projects"
+              onClick={scrollToProjects}
+            />
+            <InterestCard 
+              icon={<Camera size={32} />} 
+              title="Photography" 
+              description="Capturing moments and expressing creativity through images."
+              buttonText="View Gallery"
+              to="/photography"
+            />
+            <InterestCard 
+              icon={<Music size={32} />} 
+              title="Music" 
+              description="Exploring various genres and creating my own melodies."
+            />
           </div>
         </section>
-
         <section id="projects" className="min-h-screen flex flex-col justify-center items-center p-4">
           <h2 className="text-4xl font-bold mb-8">My Projects</h2>
           <p className="text-xl mb-4">Check out some of my recent work:</p>
@@ -92,18 +122,44 @@ const ProfilePage = () => {
   );
 };
 
-const InterestCard = ({ icon, title, description }) => (
-  <motion.div 
-    className="bg-gray-700 p-6 rounded-lg text-center"
-    whileHover={{ scale: 1.05 }}
-    transition={{ type: "spring", stiffness: 300 }}
-  >
-    <div className="flex justify-center mb-4">{icon}</div>
-    <h3 className="text-xl font-semibold mb-2">{title}</h3>
-    <p>{description}</p>
-  </motion.div>
-);
+const InterestCard = ({ icon, title, description, buttonText, onClick, to }) => {
+  const [isHovered, setIsHovered] = useState(false);
 
+  const ButtonComponent = to ? Link : 'button';
+
+
+
+  return (
+    <motion.div 
+      className="bg-gray-700 p-6 rounded-lg text-center relative overflow-hidden"
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+      whileHover={{ scale: 1.05 }}
+      transition={{ type: "spring", stiffness: 300 }}
+
+    >
+      <div className="flex justify-center mb-4">{icon}</div>
+      <h3 className="text-xl font-semibold mb-2">{title}</h3>
+      <p>{description}</p>
+      {buttonText && (
+        <motion.div
+          className="absolute right-0 top-1/2 transform -translate-y-1/2"
+          initial={{ x: '100%' }}
+          animate={{ x: isHovered ? '0%' : '100%' }}
+          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+        >
+          <ButtonComponent
+            to={to}
+            onClick={onClick}
+            className="bg-blue-500 text-white px-4 py-2 rounded-l-full flex items-center"
+          >
+            {buttonText} <ArrowRight size={16} className="ml-2" />
+          </ButtonComponent>
+        </motion.div>
+      )}
+    </motion.div>
+  );
+};
 const ProjectCard = ({ title, description }) => (
   <motion.div 
     className="bg-gray-800 p-6 rounded-lg"
