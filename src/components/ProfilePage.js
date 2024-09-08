@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useAnimation } from 'framer-motion';
 import { Camera, Code, Music, ChevronDown, ArrowRight, Mail, MessageCircleMore, Bird, Menu, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import projectsData from './ProjectsData';
 
 const ProfilePage = () => {
   const [scrollY, setScrollY] = useState(0);
@@ -277,6 +278,12 @@ const ProfilePage = () => {
               description="Exploring various genres and creating my own songs."
             />
           </div>
+          <Link
+    to="/about"
+    className="mt-12 inline-block bg-blue-500 text-white px-6 py-3 rounded-full hover:bg-blue-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+  >
+    More about me
+  </Link>
         </section>
 
         <section id="projects" className="min-h-screen flex flex-col justify-center items-center p-4 bg-opacity-50">
@@ -361,13 +368,6 @@ const InterestCard = ({ icon, title, description, buttonText, onClick, to }) => 
 };
 
 const ProjectList = () => {
-  const projects = [
-    { title: "Project 1", description: "Skib skib rizz" },
-    { title: "Project 2", description: "proj 2" },
-    { title: "Project 3", description: "shoutout to onyx my sigma" },
-    { title: "Project 4", description: "and teslaboi what a baddie" },
-  ];
-
   return (
     <motion.div 
       className="space-y-4 md:space-y-8"
@@ -383,14 +383,14 @@ const ProjectList = () => {
       initial="hidden"
       animate="show"
     >
-      {projects.map((project, index) => (
+      {projectsData.map((project, index) => (
         <ProjectCard key={index} {...project} />
       ))}
     </motion.div>
   );
 };
 
-const ProjectCard = ({ title, description }) => (
+const ProjectCard = ({ id, title, description }) => (
   <motion.div 
     className="bg-gray-800 p-6 rounded-lg"
     variants={{
@@ -402,10 +402,12 @@ const ProjectCard = ({ title, description }) => (
   >
     <h3 className="text-xl font-semibold mb-2">{title}</h3>
     <p>{description}</p>
-    <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors">
+    <Link 
+      to={`/projects/${id}`}
+      className="mt-4 inline-block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+    >
       Learn More
-    </button>
+    </Link>
   </motion.div>
 );
-
 export default ProfilePage;
