@@ -315,7 +315,7 @@ const ProfilePage = () => {
         </section>
       </main>
 
-      <footer className="bg-gray-800 bg-opacity-90 text-center p-4 relative z-10">
+     <footer className="absolute bottom-0 w-full bg-gray-800 text-center p-4">
         <p>&copy; 2024 Joshua Gilgallon. All rights reserved.</p>
       </footer>
 
@@ -390,7 +390,7 @@ const ProjectList = () => {
   );
 };
 
-const ProjectCard = ({ id, title, description }) => (
+const ProjectCard = ({ id, title, briefDescription }) => (
   <motion.div 
     className="bg-gray-800 p-6 rounded-lg"
     variants={{
@@ -401,7 +401,7 @@ const ProjectCard = ({ id, title, description }) => (
     transition={{ type: "spring", stiffness: 300 }}
   >
     <h3 className="text-xl font-semibold mb-2">{title}</h3>
-    <p>{description}</p>
+    <p>{briefDescription}</p>
     <Link 
       to={`/projects/${id}`}
       className="mt-4 inline-block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"

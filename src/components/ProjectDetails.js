@@ -73,7 +73,7 @@ const ProjectDetails = ({ projects }) => {
         
         <section className="mb-8">
           <h2 className="text-2xl font-semibold mb-4">Project Description</h2>
-          <p>{project.description}</p>
+          <p>{project.lengthyDescription}</p>
         </section>
         
         <section className="mb-8">
@@ -90,13 +90,25 @@ const ProjectDetails = ({ projects }) => {
           <p>{project.challenges}</p>
         </section>
         
-        <section>
+        <section className="mb-8">
           <h2 className="text-2xl font-semibold mb-4">Outcome</h2>
           <p>{project.outcome}</p>
         </section>
+
+        {/* Conditionally render the link section with consistent margin */}
+        {project.linkName && project.link && (
+          <div className="mb-8">
+            <section>
+              <h2 className="text-2xl font-semibold mb-4">Project Link</h2>
+              <a href={project.link} className="text-blue-400 hover:text-blue-300" target="_blank" rel="noopener noreferrer">
+                {project.linkName}
+              </a>
+            </section>
+          </div>
+        )}
       </main>
 
-      <footer className="bg-gray-800 text-center p-4">
+      <footer className="absolute bottom-0 w-full bg-gray-800 text-center p-4">
         <p>&copy; 2024 Joshua Gilgallon. All rights reserved.</p>
       </footer>
     </div>
@@ -104,3 +116,4 @@ const ProjectDetails = ({ projects }) => {
 };
 
 export default ProjectDetails;
+

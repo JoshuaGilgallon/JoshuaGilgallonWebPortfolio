@@ -27,16 +27,18 @@ const ProjectsPage = () => {
   );
 };
 
-const ProjectCard = ({ id, title, description, image }) => (
+const ProjectCard = ({ id, title, briefDescription, image }) => (
   <motion.div 
-    className="bg-gray-800 rounded-lg overflow-hidden shadow-lg"
+    className="bg-gray-800 rounded-lg overflow-hidden shadow-lg flex flex-col"
     whileHover={{ scale: 1.05 }}
     transition={{ type: "spring", stiffness: 300 }}
   >
     <img src={image} alt={title} className="w-full h-48 object-cover" />
-    <div className="p-6">
+    <div className="p-6 flex-1">
       <h2 className="text-xl font-semibold mb-2">{title}</h2>
-      <p className="text-gray-300 mb-4">{description}</p>
+      <p className="text-gray-300 mb-4">{briefDescription}</p>
+    </div>
+    <div className="p-6">
       <Link 
         to={`/projects/${id}`}
         className="inline-block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
