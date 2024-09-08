@@ -1,63 +1,174 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Camera, Code, Music, ChevronDown, ArrowRight, Mail, MessageCircleMore, Bird } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Camera, Code, Music, ChevronDown, ArrowRight, Mail, MessageCircleMore, Bird, Menu, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const ProfilePage = () => {
   const [scrollY, setScrollY] = useState(0);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
+    const handleMouseMove = (e) => setMousePosition({ x: e.clientX, y: e.clientY });
+    
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('mousemove', handleMouseMove);
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
   }, []);
 
-  const scrollToAbout = () => {
-    const projectsSection = document.getElementById('about');
-    projectsSection.scrollIntoView({ behavior: 'smooth' });
+  const scrollToSection = (sectionId) => {
+    const section = document.getElementById(sectionId);
+    section.scrollIntoView({ behavior: 'smooth' });
+    setIsMenuOpen(false);
   };
 
-  const scrollToProjects = () => {
-    const projectsSection = document.getElementById('projects');
-    projectsSection.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const scrollToInterests = () => {
-    const interestsSection = document.getElementById('interests');
-    interestsSection.scrollIntoView({behavior: 'smooth'})
-  }
+  const socials = [
+    { name: "GitHub", icon: <Code size={32} />, url: "https://github.com/JoshuaGilgallon" },
+    { name: "Instagram", icon: <Camera size={32} />, url: "https://instagram.com/your-handle" },
+    { name: "X", icon: <Bird size={32} />, url: "https://x.com/JoshGilgallon" },
+    { name: "Email", icon: <Mail size={32} />, url: "mailto:joshuagilgallon@outlook.com" },
+    { name: "Discord", icon: <MessageCircleMore size={32} />, url: "https://discord.com/users/985064786473668618"},
+    { name: "Spotify", icon: <Music size={32} />, url: "https://open.spotify.com/user/nvlujlh4k7g3zs0pe3b3xniwu?si=4ceea86bf9b846f9"},
+  ];
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white font-sans">
-      <header className="fixed w-full bg-gray-800 p-4 z-10">
+    <div className="min-h-screen bg-gray-900 text-white font-sans relative overflow-hidden">
+      {/* Dynamic background */}
+      <div 
+        className="absolute inset-0 bg-gradient-to-br from-blue-900 to-purple-900 opacity-50"
+        style={{
+          transform: `translate(${mousePosition.x / 200}px, ${mousePosition.y / 200}px)`,
+          transition: 'transform 0.2s ease-out'
+        }}
+      />
+      
+      <header className="fixed w-full bg-gray-800 bg-opacity-90 p-4 z-20">
         <nav className="flex justify-between items-center max-w-6xl mx-auto">
-          <h1 className="text-2xl font-bold">Joshua Gilgallon</h1>
-          <ul className="flex space-x-4">
-            <li><a onClick={scrollToAbout} style={{ cursor: 'pointer' }} className="hover:text-blue-400 transition-colors">About</a></li>
-            <li><a onClick={scrollToInterests} style={{ cursor: 'pointer' }} className="hover:text-blue-400 transition-colors">Interests</a></li>
-            <li><a onClick={scrollToProjects} style={{ cursor: 'pointer' }} className="hover:text-blue-400 transition-colors">Projects</a></li>
-            <li><a href="photography" className="hover:text-blue-400 transition-colors">Photography</a></li>
-          </ul>
+          <h1 className="text-2xl font-bold md:text-3xl">Joshua Gilgallon</h1>
+          <div className="md:hidden">
+            <motion.button 
+              onClick={() => setIsMenuOpen(!isMenuOpen)} 
+              className="text-white"
+              whileTap={{ scale: 0.95 }}
+            >
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={isMenuOpen ? "close" : "menu"}
+                  initial={{ opacity: 0, rotate: -180 }}
+                  animate={{ opacity: 1, rotate: 0 }}
+                  exit={{ opacity: 0, rotate: 180 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                </motion.div>
+              </AnimatePresence>
+            </motion.button>
+          </div>
+            <AnimatePresence>
+            {isMenuOpen && (
+              <motion.ul
+                className="md:flex md:space-x-4 absolute md:relative top-full left-0 w-full md:w-auto bg-gray-800 md:bg-transparent p-4 md:p-0"
+                initial={{ x: "100%" }}
+                animate={{ x: 0 }}
+                exit={{ x: "100%" }}
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              >
+                {['about', 'interests', 'projects', 'socials'].map((section) => (
+                  <li key={section}>
+                    <a 
+                      onClick={() => scrollToSection(section)} 
+                      className="block py-2 md:py-0 hover:text-blue-400 transition-colors cursor-pointer"
+                    >
+                      {section.charAt(0).toUpperCase() + section.slice(1)}
+                    </a>
+                  </li>
+                ))}
+              </motion.ul>
+            )}
+          </AnimatePresence>
         </nav>
       </header>
 
-      <main className="pt-20">
-        <section id="about" className="min-h-screen flex flex-col justify-center items-center text-center p-4">
+      <main className="pt-20 relative z-10">
+        <section id="about" className="h-screen flex flex-col justify-center items-center text-center p-4 relative">
           <motion.h2 
-            className="text-6xl font-bold mb-4"
+            className="text-4xl md:text-6xl font-bold mb-4 relative"
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            Hello, I'm Josh
+            <motion.span 
+              className="inline-block"
+              whileHover={{ scale: 1.05 }}
+            >
+              Hello,
+            </motion.span>{' '}
+            <motion.span 
+              className="inline-block"
+              whileHover={{ scale: 1.05 }}
+            >
+              I'm
+            </motion.span>{' '}
+            <motion.span 
+              className="inline-block"
+              whileHover={{ scale: 1.05 }}
+            >
+              Josh
+            </motion.span>
           </motion.h2>
           <motion.p 
-            className="text-xl mb-8"
+            className="text-lg md:text-xl mb-8 relative"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.8 }}
           >
-            15-year-old coding enthusiast, photographer, and music lover
+            <motion.span 
+              className="inline-block"
+              whileHover={{ scale: 1.05 }}
+            >
+              15-year-old
+            </motion.span>{' '}
+            <motion.span 
+              className="inline-block"
+              whileHover={{ scale: 1.05 }}
+            >
+              coding
+            </motion.span>{' '}
+            <motion.span 
+              className="inline-block"
+              whileHover={{ scale: 1.05 }}
+            >
+              enthusiast,
+            </motion.span>{' '}
+            <motion.span 
+              className="inline-block"
+              whileHover={{ scale: 1.05 }}
+            >
+              photographer,
+            </motion.span>{' '}
+            <motion.span 
+              className="inline-block"
+              whileHover={{ scale: 1.05 }}
+            >
+              and
+            </motion.span>{' '}
+            <motion.span 
+              className="inline-block"
+              whileHover={{ scale: 1.05 }}
+            >
+              music
+            </motion.span>{' '}
+            <motion.span 
+              className="inline-block"
+              whileHover={{ scale: 1.05 }}
+            >
+              lover
+            </motion.span>
           </motion.p>
           <motion.div 
             className="flex space-x-4"
@@ -65,24 +176,41 @@ const ProfilePage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8, duration: 0.8 }}
           >
-            
             <button 
-              onClick={scrollToInterests} 
-              style={{
-                background: 'none', 
-                border: 'none', 
-                display: 'flex', 
-                gap: '20px' // Adjust the gap as needed
-              }}
+              onClick={() => scrollToSection('interests')} 
+              className="bg-transparent border-none flex gap-5 relative group"
             >
-              <Code size={48} />
-              <Camera size={48} />
-              <Music size={48} />
+              <motion.div whileHover={{ scale: 1.1 }} className="relative">
+                <Code size={48} />
+                <span className="absolute inset-0 bg-blue-500 opacity-20 blur rounded-full"></span>
+              </motion.div>
+              <motion.div whileHover={{ scale: 1.1 }} className="relative">
+                <Camera size={48} />
+                <span className="absolute inset-0 bg-purple-500 opacity-20 blur rounded-full"></span>
+              </motion.div>
+              <motion.div whileHover={{ scale: 1.1 }} className="relative">
+                <Music size={48} />
+                <span className="absolute inset-0 bg-green-500 opacity-20 blur rounded-full"></span>
+              </motion.div>
+            </button>
+          </motion.div>
+
+          <motion.div
+            className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
+            animate={{ y: [0, -10, 0] }}
+            transition={{ y: { duration: 2, repeat: Infinity, ease: 'easeInOut' } }}
+          >
+            <button 
+              onClick={() => scrollToSection('interests')} 
+              className="flex flex-col items-center text-blue-400 hover:text-blue-300 transition-colors"
+            >
+              <p className="mb-2">Scroll Down</p>
+              <ChevronDown size={24} />
             </button>
           </motion.div>
         </section>
 
-       <section id="interests" className="min-h-screen flex flex-col justify-center items-center p-4 bg-gray-800">
+        <section id="interests" className="min-h-screen flex flex-col justify-center items-center p-4 bg-gray-800 bg-opacity-50">
           <h2 className="text-4xl font-bold mb-8">My Interests</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl">
             <InterestCard 
@@ -90,7 +218,7 @@ const ProfilePage = () => {
               title="Coding" 
               description="I love creating and problem-solving through code."
               buttonText="View Projects"
-              onClick={scrollToProjects}
+              onClick={() => scrollToSection('projects')}
             />
             <InterestCard 
               icon={<Camera size={32} />} 
@@ -107,27 +235,41 @@ const ProfilePage = () => {
           </div>
         </section>
 
-        <section id="projects" className="min-h-screen flex flex-col justify-center items-center p-4">
+        <section id="projects" className="min-h-screen flex flex-col justify-center items-center p-4 bg-opacity-50">
           <h2 className="text-4xl font-bold mb-8">My Projects</h2>
           <p className="text-xl mb-4">Check out some of my recent work:</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl">
-            <ProjectCard title="Project 1" description="A brief description of your first project." />
-            <ProjectCard title="Project 2" description="A brief description of your second project." />
-            <ProjectCard title="Project 3" description="A brief description of your third project." />
-            <ProjectCard title="ProjectBird 4" description="A brief description of your fourth project." />
+          <div className="w-full max-w-4xl">
+            <ProjectList />
           </div>
         </section>
 
-        <SocialsCard />
-          
+        <section id="socials" className="min-h-screen flex flex-col justify-center items-center p-4 bg-gray-800 bg-opacity-50">
+          <h2 className="text-4xl font-bold mb-8">Socials</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-8 max-w-4xl">
+            {socials.map((social, index) => (
+              <motion.a
+                key={index}
+                href={social.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-gray-700 p-6 rounded-lg text-center hover:bg-gray-600 transition-colors"
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
+                <div className="flex justify-center mb-4">{social.icon}</div>
+                <h3 className="text-xl font-semibold mb-2">{social.name}</h3>
+              </motion.a>
+            ))}
+          </div>
+        </section>
       </main>
 
-      <footer className="bg-gray-800 text-center p-4">
+      <footer className="bg-gray-800 bg-opacity-90 text-center p-4 relative z-10">
         <p>&copy; 2024 Joshua Gilgallon. All rights reserved.</p>
       </footer>
 
       <motion.div 
-        className="fixed bottom-4 right-4 bg-blue-500 rounded-full p-2 cursor-pointer"
+        className="fixed bottom-4 right-4 bg-blue-500 rounded-full p-2 cursor-pointer z-20"
         animate={{ y: scrollY > 100 ? 0 : 100 }}
         whileHover={{ scale: 1.1 }}
         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
@@ -150,7 +292,6 @@ const InterestCard = ({ icon, title, description, buttonText, onClick, to }) => 
       onHoverEnd={() => setIsHovered(false)}
       whileHover={{ scale: 1.05 }}
       transition={{ type: "spring", stiffness: 300 }}
-
     >
       <div className="flex justify-center mb-4">{icon}</div>
       <h3 className="text-xl font-semibold mb-2">{title}</h3>
@@ -174,10 +315,45 @@ const InterestCard = ({ icon, title, description, buttonText, onClick, to }) => 
     </motion.div>
   );
 };
+
+const ProjectList = () => {
+  const projects = [
+    { title: "Project 1", description: "A brief description of your first project." },
+    { title: "Project 2", description: "A brief description of your second project." },
+    { title: "Project 3", description: "A brief description of your third project." },
+    { title: "Project 4", description: "A brief description of your fourth project." },
+  ];
+
+  return (
+    <motion.div 
+      className="space-y-4 md:space-y-8"
+      variants={{
+        hidden: { opacity: 0 },
+        show: {
+          opacity: 1,
+          transition: {
+            staggerChildren: 0.1
+          }
+        }
+      }}
+      initial="hidden"
+      animate="show"
+    >
+      {projects.map((project, index) => (
+        <ProjectCard key={index} {...project} />
+      ))}
+    </motion.div>
+  );
+};
+
 const ProjectCard = ({ title, description }) => (
   <motion.div 
     className="bg-gray-800 p-6 rounded-lg"
-    whileHover={{ scale: 1.05 }}
+    variants={{
+      hidden: { opacity: 0, y: 20 },
+      show: { opacity: 1, y: 0 }
+    }}
+    whileHover={{ scale: 1.02 }}
     transition={{ type: "spring", stiffness: 300 }}
   >
     <h3 className="text-xl font-semibold mb-2">{title}</h3>
@@ -187,40 +363,5 @@ const ProjectCard = ({ title, description }) => (
     </button>
   </motion.div>
 );
-
-
-const SocialsCard = () => {
-  const socials = [
-    { name: "GitHub", icon: <Code size={32} />, url: "https://github.com/JoshuaGilgallon" },
-    { name: "Instagram", icon: <Camera size={32} />, url: "https://instagram.com/your-handle" },
-    { name: "Twitter", icon: <Bird size={32} />, url: "https://twitter.com/your-handle" },
-    { name: "Email", icon: <Mail size={32} />, url: "mailto:joshuagilgallon@outlook.com" },
-    { name: "Discord", icon: <MessageCircleMore size={32} />, url: "https://discord.com/users/985064786473668618"},
-    { name: "Spotify", icon: <Music size={32} />, url: "https://open.spotify.com/user/nvlujlh4k7g3zs0pe3b3xniwu?si=4ceea86bf9b846f9"},
-  ];
-
-  return (
-    <section className="min-h-screen flex flex-col justify-center items-center p-4 bg-gray-800">
-      <h2 className="text-4xl font-bold mb-8">Socials</h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl">
-        {socials.map((social, index) => (
-          <motion.a
-            key={index}
-            href={social.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-gray-700 p-6 rounded-lg text-center hover:bg-gray-600 transition-colors"
-            whileHover={{ scale: 1.05 }}
-            transition={{ type: "spring", stiffness: 300 }}
-          >
-            <div className="flex justify-center mb-4">{social.icon}</div>
-            <h3 className="text-xl font-semibold mb-2">{social.name}</h3>
-          </motion.a>
-        ))}
-      </div>
-    </section>
-  );
-};
-
 
 export default ProfilePage;
