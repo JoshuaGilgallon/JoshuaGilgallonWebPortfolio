@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Camera, Code, Music, ChevronDown, ArrowRight  } from 'lucide-react';
+import { Camera, Code, Music, ChevronDown, ArrowRight, Mail, MessageCircleMore, Bird } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const ProfilePage = () => {
@@ -65,11 +65,23 @@ const ProfilePage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8, duration: 0.8 }}
           >
-            <Code size={48} />
-            <Camera size={48} />
-            <Music size={48} />
+            
+            <button 
+              onClick={scrollToInterests} 
+              style={{
+                background: 'none', 
+                border: 'none', 
+                display: 'flex', 
+                gap: '20px' // Adjust the gap as needed
+              }}
+            >
+              <Code size={48} />
+              <Camera size={48} />
+              <Music size={48} />
+            </button>
           </motion.div>
         </section>
+
        <section id="interests" className="min-h-screen flex flex-col justify-center items-center p-4 bg-gray-800">
           <h2 className="text-4xl font-bold mb-8">My Interests</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl">
@@ -94,6 +106,7 @@ const ProfilePage = () => {
             />
           </div>
         </section>
+
         <section id="projects" className="min-h-screen flex flex-col justify-center items-center p-4">
           <h2 className="text-4xl font-bold mb-8">My Projects</h2>
           <p className="text-xl mb-4">Check out some of my recent work:</p>
@@ -101,9 +114,12 @@ const ProfilePage = () => {
             <ProjectCard title="Project 1" description="A brief description of your first project." />
             <ProjectCard title="Project 2" description="A brief description of your second project." />
             <ProjectCard title="Project 3" description="A brief description of your third project." />
-            <ProjectCard title="Project 4" description="A brief description of your fourth project." />
+            <ProjectCard title="ProjectBird 4" description="A brief description of your fourth project." />
           </div>
         </section>
+
+        <SocialsCard />
+          
       </main>
 
       <footer className="bg-gray-800 text-center p-4">
@@ -126,8 +142,6 @@ const InterestCard = ({ icon, title, description, buttonText, onClick, to }) => 
   const [isHovered, setIsHovered] = useState(false);
 
   const ButtonComponent = to ? Link : 'button';
-
-
 
   return (
     <motion.div 
@@ -173,5 +187,40 @@ const ProjectCard = ({ title, description }) => (
     </button>
   </motion.div>
 );
+
+
+const SocialsCard = () => {
+  const socials = [
+    { name: "GitHub", icon: <Code size={32} />, url: "https://github.com/JoshuaGilgallon" },
+    { name: "Instagram", icon: <Camera size={32} />, url: "https://instagram.com/your-handle" },
+    { name: "Twitter", icon: <Bird size={32} />, url: "https://twitter.com/your-handle" },
+    { name: "Email", icon: <Mail size={32} />, url: "mailto:joshuagilgallon@outlook.com" },
+    { name: "Discord", icon: <MessageCircleMore size={32} />, url: "https://discord.com/users/985064786473668618"},
+    { name: "Spotify", icon: <Music size={32} />, url: "https://open.spotify.com/user/nvlujlh4k7g3zs0pe3b3xniwu?si=4ceea86bf9b846f9"},
+  ];
+
+  return (
+    <section className="min-h-screen flex flex-col justify-center items-center p-4 bg-gray-800">
+      <h2 className="text-4xl font-bold mb-8">Socials</h2>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl">
+        {socials.map((social, index) => (
+          <motion.a
+            key={index}
+            href={social.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-gray-700 p-6 rounded-lg text-center hover:bg-gray-600 transition-colors"
+            whileHover={{ scale: 1.05 }}
+            transition={{ type: "spring", stiffness: 300 }}
+          >
+            <div className="flex justify-center mb-4">{social.icon}</div>
+            <h3 className="text-xl font-semibold mb-2">{social.name}</h3>
+          </motion.a>
+        ))}
+      </div>
+    </section>
+  );
+};
+
 
 export default ProfilePage;
