@@ -296,6 +296,12 @@ const ProfilePage = () => {
           <div className="w-full max-w-4xl">
             <ProjectList />
           </div>
+          <Link
+            to="/projects"
+            className="mt-12 inline-block bg-blue-500 text-white px-6 py-3 rounded-full hover:bg-blue-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+          >
+           All my projects 
+          </Link>
         </section>
 
         <section id="socials" className="min-h-screen flex flex-col justify-center items-center p-4 bg-gray-800 bg-opacity-50">
@@ -335,9 +341,9 @@ const ProfilePage = () => {
   );
 };
 
+
 const InterestCard = ({ icon, title, description, buttonText, onClick, to }) => {
   const [isHovered, setIsHovered] = useState(false);
-
   const ButtonComponent = to ? Link : 'button';
 
   return (
@@ -350,18 +356,18 @@ const InterestCard = ({ icon, title, description, buttonText, onClick, to }) => 
     >
       <div className="flex justify-center mb-4">{icon}</div>
       <h3 className="text-xl font-semibold mb-2">{title}</h3>
-      <p>{description}</p>
+      <p className="mb-4">{description}</p>
       {buttonText && (
         <motion.div
-          className="absolute right-0 top-1/2 transform -translate-y-1/2"
-          initial={{ x: '100%' }}
-          animate={{ x: isHovered ? '0%' : '100%' }}
-          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+          className="absolute inset-0 flex items-center justify-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isHovered ? 1 : 0 }}
+          transition={{ duration: 0.3 }}
         >
           <ButtonComponent
             to={to}
             onClick={onClick}
-            className="bg-blue-500 text-white px-4 py-2 rounded-l-full flex items-center"
+            className="bg-blue-500 text-white px-4 py-2 rounded-lg w-full h-full flex items-center justify-center"
           >
             {buttonText} <ArrowRight size={16} className="ml-2" />
           </ButtonComponent>
