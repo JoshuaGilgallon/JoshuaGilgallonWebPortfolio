@@ -189,13 +189,7 @@ const ProfilePage = () => {
               className="inline-block"
               whileHover={{ scale: 1.05 }}
             >
-              coding
-            </motion.span>{' '}
-            <motion.span 
-              className="inline-block"
-              whileHover={{ scale: 1.05 }}
-            >
-              enthusiast,
+             developer, 
             </motion.span>{' '}
             <motion.span 
               className="inline-block"
