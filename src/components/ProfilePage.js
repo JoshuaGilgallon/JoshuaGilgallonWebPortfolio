@@ -24,6 +24,7 @@ const ProfilePage = () => {
   }, []);
 
   useEffect(() => {
+    document.title = 'Joshua Gilgallon'
     const animateText = async () => {
       while (true) {
         await controls.start({ width: 0, opacity: 1 });
@@ -37,9 +38,13 @@ const ProfilePage = () => {
   }, [controls]);
 
   const scrollToSection = (sectionId) => {
+  if (sectionId === 'about') {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
     const section = document.getElementById(sectionId);
     section.scrollIntoView({ behavior: 'smooth' });
-    setIsMenuOpen(false);
+  }
+  setIsMenuOpen(false);
   };
 
   const socials = [
@@ -132,7 +137,7 @@ const ProfilePage = () => {
       </header>
 
       <main className="pt-20 relative z-10">
-        <section id="about" className="h-screen flex flex-col justify-center items-center text-center p-4 relative overflow-hidden" style={{ maxHeight: '100vh' }}>
+        <section id="about" className="h-screen flex flex-col justify-center items-center text-center p-4 relative overflow-hidden" style={{ maxHeight: '90vh' }}>
           <motion.h2 
             className="text-4xl md:text-6xl font-bold mb-4 relative flex items-center justify-center"
             initial={{ opacity: 0, y: -50 }}
@@ -184,13 +189,7 @@ const ProfilePage = () => {
               className="inline-block"
               whileHover={{ scale: 1.05 }}
             >
-              coding
-            </motion.span>{' '}
-            <motion.span 
-              className="inline-block"
-              whileHover={{ scale: 1.05 }}
-            >
-              enthusiast,
+             developer, 
             </motion.span>{' '}
             <motion.span 
               className="inline-block"
@@ -242,7 +241,7 @@ const ProfilePage = () => {
             </button>
           </motion.div>
 
-          <div className="absolute bottom-20 left-0 right-0 flex justify-center">
+          <div className="absolute bottom-5 left-0 right-0 flex justify-center">
         <motion.button 
           onClick={() => scrollToSection('interests')} 
           className="flex flex-col items-center text-blue-400 hover:text-blue-300 transition-colors"
@@ -292,6 +291,12 @@ const ProfilePage = () => {
           <div className="w-full max-w-4xl">
             <ProjectList />
           </div>
+          <Link
+            to="/projects"
+            className="mt-12 inline-block bg-blue-500 text-white px-6 py-3 rounded-full hover:bg-blue-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+          >
+           All my projects 
+          </Link>
         </section>
 
         <section id="socials" className="min-h-screen flex flex-col justify-center items-center p-4 bg-gray-800 bg-opacity-50">
@@ -331,9 +336,9 @@ const ProfilePage = () => {
   );
 };
 
+
 const InterestCard = ({ icon, title, description, buttonText, onClick, to }) => {
   const [isHovered, setIsHovered] = useState(false);
-
   const ButtonComponent = to ? Link : 'button';
 
   return (
@@ -346,18 +351,18 @@ const InterestCard = ({ icon, title, description, buttonText, onClick, to }) => 
     >
       <div className="flex justify-center mb-4">{icon}</div>
       <h3 className="text-xl font-semibold mb-2">{title}</h3>
-      <p>{description}</p>
+      <p className="mb-4">{description}</p>
       {buttonText && (
         <motion.div
-          className="absolute right-0 top-1/2 transform -translate-y-1/2"
-          initial={{ x: '100%' }}
-          animate={{ x: isHovered ? '0%' : '100%' }}
-          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+          className="absolute inset-0 flex items-center justify-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isHovered ? 1 : 0 }}
+          transition={{ duration: 0.3 }}
         >
           <ButtonComponent
             to={to}
             onClick={onClick}
-            className="bg-blue-500 text-white px-4 py-2 rounded-l-full flex items-center"
+            className="bg-blue-500 text-white px-4 py-2 rounded-lg w-full h-full flex items-center justify-center"
           >
             {buttonText} <ArrowRight size={16} className="ml-2" />
           </ButtonComponent>
