@@ -37,9 +37,13 @@ const ProfilePage = () => {
   }, [controls]);
 
   const scrollToSection = (sectionId) => {
+  if (sectionId === 'about') {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
     const section = document.getElementById(sectionId);
     section.scrollIntoView({ behavior: 'smooth' });
-    setIsMenuOpen(false);
+  }
+  setIsMenuOpen(false);
   };
 
   const socials = [
@@ -132,7 +136,7 @@ const ProfilePage = () => {
       </header>
 
       <main className="pt-20 relative z-10">
-        <section id="about" className="h-screen flex flex-col justify-center items-center text-center p-4 relative overflow-hidden" style={{ maxHeight: '100vh' }}>
+        <section id="about" className="h-screen flex flex-col justify-center items-center text-center p-4 relative overflow-hidden" style={{ maxHeight: '90vh' }}>
           <motion.h2 
             className="text-4xl md:text-6xl font-bold mb-4 relative flex items-center justify-center"
             initial={{ opacity: 0, y: -50 }}
@@ -242,7 +246,7 @@ const ProfilePage = () => {
             </button>
           </motion.div>
 
-          <div className="absolute bottom-20 left-0 right-0 flex justify-center">
+          <div className="absolute bottom-5 left-0 right-0 flex justify-center">
         <motion.button 
           onClick={() => scrollToSection('interests')} 
           className="flex flex-col items-center text-blue-400 hover:text-blue-300 transition-colors"
