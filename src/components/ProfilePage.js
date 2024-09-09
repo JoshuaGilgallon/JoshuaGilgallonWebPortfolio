@@ -24,6 +24,7 @@ const ProfilePage = () => {
   }, []);
 
   useEffect(() => {
+    document.title = 'Joshua Gilgallon'
     const animateText = async () => {
       while (true) {
         await controls.start({ width: 0, opacity: 1 });
