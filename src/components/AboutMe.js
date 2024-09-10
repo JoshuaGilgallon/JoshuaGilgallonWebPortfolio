@@ -11,13 +11,13 @@ const AboutPage = () => {
   const [activeLanguage, setActiveLanguage] = useState('C');
 
   const languages = [
-    { name: 'C', icon: cIcon, description: 'Low-level programming language for system development' },  // Image icon
-    { name: 'C#', icon: cSharpIcon, description: 'Versatile language for Windows and game development' },    // Emoji icon
-    { name: 'Python', icon: pythonIcon, description: 'High-level language for rapid development and data analysis' },  // Emoji icon
+    { name: 'C', icon: cIcon, description: 'Low-level programming language for system development' },
+    { name: 'C#', icon: cSharpIcon, description: 'Versatile language for Windows and game development' },
+    { name: 'Python', icon: pythonIcon, description: 'High-level language for rapid development and data analysis' },
   ];
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white font-sans">
+    <div className="min-h-screen bg-gray-900 text-white font-sans flex flex-col">
       <header className="bg-gray-800 p-4">
         <nav className="max-w-6xl mx-auto flex justify-between items-center">
           <Link to="/" className="text-2xl font-bold">Joshua Gilgallon</Link>
@@ -61,7 +61,7 @@ const AboutPage = () => {
         </nav>
       </header>
 
-      <main className="max-w-4xl mx-auto py-12 px-4">
+      <main className="flex-grow max-w-4xl mx-auto py-12 px-4">
         <h1 className="text-4xl font-bold mb-8">About Me</h1>
         
         <section className="mb-12">
@@ -121,10 +121,8 @@ const AboutPage = () => {
             )}
           </AnimatePresence>
         </section>
-        
-        {/* Add more sections as needed */}
       </main>
-
+      
       <footer className="bg-gray-800 text-center p-4 flex-shrink-0">
         <p>&copy; 2024 Joshua Gilgallon. All rights reserved.</p>
       </footer>
