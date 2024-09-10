@@ -71,7 +71,7 @@ const PhotographyPage = () => {
         </section>
       </main>
 
-      <footer className="absolute bottom-0 w-full bg-gray-800 text-center p-4">
+      <footer className="bg-gray-800 text-center p-4 flex-shrink-0">
         <p>&copy; 2024 Joshua Gilgallon. All rights reserved.</p>
       </footer>
 

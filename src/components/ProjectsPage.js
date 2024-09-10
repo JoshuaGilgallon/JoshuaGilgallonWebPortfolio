@@ -5,14 +5,14 @@ import projectsData from './ProjectsData';
 
 const ProjectsPage = () => {
   return (
-    <div className="min-h-screen bg-gray-900 text-white font-sans">
+    <div className="min-h-screen bg-gray-900 text-white font-sans flex flex-col">
       <header className="bg-gray-800 p-4">
         <nav className="max-w-6xl mx-auto flex justify-between items-center">
           <Link to="/" className="text-2xl font-bold">Joshua Gilgallon</Link>
           <Link to="/" className="text-blue-400 hover:text-blue-300">Back to Home</Link>
         </nav>
       </header>
-      <main className="max-w-6xl mx-auto py-12 px-4">
+      <main className="flex-grow max-w-6xl mx-auto py-12 px-4">
         <h1 className="text-4xl font-bold mb-8">My Projects</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {projectsData.map((project) => (
@@ -20,7 +20,7 @@ const ProjectsPage = () => {
           ))}
         </div>
       </main>
-      <footer className="absolute bottom-0 w-full bg-gray-800 text-center p-4">
+      <footer className="bg-gray-800 text-center p-4 flex-shrink-0">
         <p>&copy; 2024 Joshua Gilgallon. All rights reserved.</p>
       </footer>
     </div>
@@ -50,3 +50,4 @@ const ProjectCard = ({ id, title, briefDescription, image }) => (
 );
 
 export default ProjectsPage;
+
