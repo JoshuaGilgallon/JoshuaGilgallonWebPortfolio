@@ -77,7 +77,7 @@ const AboutPage = () => {
         <section className="mb-12">
           <h2 className="text-2xl font-semibold mb-4 flex items-center">
             <Music size={24} className="mr-2" />
-            My Musical Journey
+            Music 
           </h2>
           <p>
             Music has been a significant part of my life since I was young. I started playing piano at a young age and have since explored various genres including rap, electronic, and rock. My passion for music extends beyond just listening - I've been composing my own tracks using digital audio workstations (DAWs) like FL Studio. This creative outlet complements my coding projects, often inspiring unique solutions and approaches in my development work.
