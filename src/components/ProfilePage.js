@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence, useAnimation } from 'framer-motion';
 import { Camera, Code, Music, ChevronDown, ArrowRight, Mail, MessageCircleMore, Bird, Menu, X } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import projectsData from './ProjectsData';
 
 const ProfilePage = () => {
@@ -9,6 +9,38 @@ const ProfilePage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const controls = useAnimation();
+  const isMountedRef = useRef(true);
+  const navigate = useNavigate();
+
+  const animateText = useCallback(async () => {
+    if (!isMountedRef.current) return;
+    
+    while (isMountedRef.current) {
+      await controls.start({ width: 0, opacity: 1 });
+      if (!isMountedRef.current) break;
+      await controls.start({ width: '100%', transition: { duration: 1.5 } });
+      if (!isMountedRef.current) break;
+      await new Promise(resolve => setTimeout(resolve, 4000));
+      if (!isMountedRef.current) break;
+      await controls.start({ width: 0, transition: { duration: 0.5 } });
+      if (!isMountedRef.current) break;
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+  }, [controls]);
+
+  useEffect(() => {
+    document.title = 'Joshua Gilgallon';
+    const timeoutId = setTimeout(() => {
+      if (isMountedRef.current) {
+        animateText();
+      }
+    }, 100);
+
+    return () => {
+      clearTimeout(timeoutId);
+      isMountedRef.current = false;
+    };
+  }, [animateText]);
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
@@ -23,21 +55,13 @@ const ProfilePage = () => {
     };
   }, []);
 
-  useEffect(() => {
-    document.title = 'Joshua Gilgallon'
-    const animateText = async () => {
-      while (true) {
-        await controls.start({ width: 0, opacity: 1 });
-        await controls.start({ width: '100%', transition: { duration: 1.5 } });
-        await new Promise(resolve => setTimeout(resolve, 4000));
-        await controls.start({ width: 0, transition: { duration: 0.5 } });
-        await new Promise(resolve => setTimeout(resolve, 1000));
-      }
-    };
-    animateText();
-  }, [controls]);
-
-  const scrollToSection = (sectionId) => {
+  const handleNavigation = useCallback((path) => {
+    isMountedRef.current = false;
+    controls.stop();
+    setTimeout(() => {
+      navigate(path);
+    }, 50);
+  }, [navigate, controls]);  const scrollToSection = (sectionId) => {
   if (sectionId === 'about') {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   } else {
@@ -278,11 +302,15 @@ const ProfilePage = () => {
             />
           </div>
           <Link
-    to="/about"
-    className="mt-12 inline-block bg-blue-500 text-white px-6 py-3 rounded-full hover:bg-blue-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
-  >
-    More about me
-  </Link>
+        to="/about"
+        onClick={(e) => {
+          e.preventDefault();
+          handleNavigation('/about');
+        }}
+        className="mt-12 inline-block bg-blue-500 text-white px-6 py-3 rounded-full hover:bg-blue-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+      >
+        More about me
+      </Link>
         </section>
 
         <section id="projects" className="min-h-screen flex flex-col justify-center items-center p-4 bg-opacity-50">

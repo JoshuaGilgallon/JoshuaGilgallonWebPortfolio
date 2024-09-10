@@ -6,21 +6,20 @@ import { Link } from 'react-router-dom';
 const PhotographyPage = () => {
   const [selectedPhoto, setSelectedPhoto] = useState(null);
 
-
   const photos = [
-    { id: 1, src: "https://placehold.co/1920x1080/025C8E/FFF?text=Placeholder%20Image", alt: "Landscape photo", description: "A beautiful sunset over the mountains" },
-    { id: 2, src: "https://placehold.co/1920x1080/025C8E/FFF?text=Placeholder%20Image", alt: "Portrait photo", description: "A candid street portrait" },
-    { id: 3, src: "https://placehold.co/1920x1080/025C8E/FFF?text=Placeholder%20Image", alt: "Macro photo", description: "Close-up of a colorful butterfly" },
-    { id: 4, src: "https://placehold.co/1920x1080/025C8E/FFF?text=Placeholder%20Image", alt: "Architecture photo", description: "Modern building with interesting geometry" },
-    { id: 5, src: "https://placehold.co/1920x1080/025C8E/FFF?text=Placeholder%20Image", alt: "Nature photo", description: "Misty forest in the early morning" },
-    { id: 6, src: "https://placehold.co/1920x1080/025C8E/FFF?text=Placeholder%20Image", alt: "Urban photo", description: "Busy city street at night" },
+    { id: 1, src: "https://placehold.co/1920x1080/025c8e/fff?text=placeholder%20image", alt: "Landscape photo", description: "A beautiful sunset over the mountains" },
+    { id: 2, src: "https://placehold.co/1920x1080/025c8e/fff?text=placeholder%20image", alt: "Portrait photo", description: "A candid street portrait" },
+    { id: 3, src: "https://placehold.co/1920x1080/025c8e/fff?text=placeholder%20image", alt: "Macro photo", description: "Close-up of a colorful butterfly" },
+    { id: 4, src: "https://placehold.co/1920x1080/025c8e/fff?text=placeholder%20image", alt: "Architecture photo", description: "Modern building with interesting geometry" },
+    { id: 5, src: "https://placehold.co/1920x1080/025c8e/fff?text=placeholder%20image", alt: "Nature photo", description: "Misty forest in the early morning" },
+    { id: 6, src: "https://placehold.co/1920x1080/025c8e/fff?text=placeholder%20image", alt: "Urban photo", description: "Busy city street at night" },
   ];
 
   const equipment = [
-    { name: "Camera Body", description: "Canon EOS 200D Mark II", url:"https://google.com" },
-    { name: "Lens 1", description: "Canon RF 24-70mm f/2.8L IS USM", url:"https://google.com"  },
-    { name: "Lens 2", description: "Canon RF 70-200mm f/2.8L IS USM", url:"https://google.com"  },
-    { name: "Tripod", description: "Manfrotto MT055CXPRO4", url:"https://google.com"  },
+    { name: "Camera body", description: "Canon EOS 200D Mark II", url:"https://google.com" },
+    { name: "Lens 1", description: "Canon RF 24-70mm f/2.8L IS USM", url:"https://google.com" },
+    { name: "Lens 2", description: "Canon RF 70-200mm f/2.8L IS USM", url:"https://google.com" },
+    { name: "Tripod", description: "Manfrotto MT055CXPRO4", url:"https://google.com" },
     { name: "Lighting", description: "Godox AD200Pro Flash", url:"https://google.com" },
   ];
 
@@ -62,7 +61,7 @@ const PhotographyPage = () => {
                 className="bg-gray-800 p-4 rounded-lg"
                 whileHover={{ scale: 1.05 }}
                 onClick={() => window.open(item.url, '_blank')}
-              style = {{ cursor: 'pointer' }}
+                style={{ cursor: 'pointer' }}
               >
                 <h3 className="text-xl font-semibold mb-2">{item.name}</h3>
                 <p>{item.description}</p>
@@ -70,12 +69,9 @@ const PhotographyPage = () => {
             ))}
           </div>
         </section>
-
-     
-
       </main>
 
-<footer className="absolute bottom-0 w-full bg-gray-800 text-center p-4">
+      <footer className="absolute bottom-0 w-full bg-gray-800 text-center p-4">
         <p>&copy; 2024 Joshua Gilgallon. All rights reserved.</p>
       </footer>
 
