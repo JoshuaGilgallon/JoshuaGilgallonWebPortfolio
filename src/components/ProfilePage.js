@@ -1,74 +1,49 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useAnimation } from 'framer-motion';
 import { Camera, Code, Music, ChevronDown, ArrowRight, Mail, MessageCircleMore, Bird, Menu, X } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import projectsData from './ProjectsData';
 
 const ProfilePage = () => {
   const [scrollY, setScrollY] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const controls = useAnimation();
-  const isMountedRef = useRef(true);
-  const navigate = useNavigate();
-
-  const animateText = useCallback(async () => {
-    if (!isMountedRef.current) return;
-    
-    while (isMountedRef.current) {
-      await controls.start({ width: 0, opacity: 1 });
-      if (!isMountedRef.current) break;
-      await controls.start({ width: '100%', transition: { duration: 1.5 } });
-      if (!isMountedRef.current) break;
-      await new Promise(resolve => setTimeout(resolve, 4000));
-      if (!isMountedRef.current) break;
-      await controls.start({ width: 0, transition: { duration: 0.5 } });
-      if (!isMountedRef.current) break;
-      await new Promise(resolve => setTimeout(resolve, 1000));
-    }
-  }, [controls]);
+  const [headerHeight, setHeaderHeight] = useState(0);
+  const headerRef = useRef(null);
 
   useEffect(() => {
     document.title = 'Joshua Gilgallon';
-    const timeoutId = setTimeout(() => {
-      if (isMountedRef.current) {
-        animateText();
-      }
-    }, 100);
-
-    return () => {
-      clearTimeout(timeoutId);
-      isMountedRef.current = false;
-    };
-  }, [animateText]);
-
-  useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
     const handleMouseMove = (e) => setMousePosition({ x: e.clientX, y: e.clientY });
-    
+
+    const calculateHeaderHeight = () => {
+    if (headerRef.current) {
+      const height = headerRef.current.offsetHeight;
+      setHeaderHeight(height);
+      }
+    };
+
     window.addEventListener('scroll', handleScroll);
     window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('resize', calculateHeaderHeight);
     
+    calculateHeaderHeight(); // Initial calculation
+
     return () => {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('resize', calculateHeaderHeight);
     };
   }, []);
 
-  const handleNavigation = useCallback((path) => {
-    isMountedRef.current = false;
-    controls.stop();
-    setTimeout(() => {
-      navigate(path);
-    }, 50);
-  }, [navigate, controls]);  const scrollToSection = (sectionId) => {
-  if (sectionId === 'about') {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  } else {
-    const section = document.getElementById(sectionId);
-    section.scrollIntoView({ behavior: 'smooth' });
-  }
-  setIsMenuOpen(false);
+  const scrollToSection = (sectionId) => {
+  const section = document.getElementById(sectionId);
+  if (section) {
+    const yOffset = -headerHeight; // Use the negative header height as offset
+    const y = section.getBoundingClientRect().top + window.pageYOffset + yOffset;
+    window.scrollTo({top: y, behavior: 'smooth'});
+    }
+    setIsMenuOpen(false);
   };
 
   const socials = [
@@ -95,24 +70,22 @@ const ProfilePage = () => {
         <nav className="flex justify-between items-center max-w-6xl mx-auto">
           <h1 className="text-2xl font-bold md:text-3xl">Joshua Gilgallon</h1>
           <div className="md:hidden">
-  <motion.button 
-    onClick={() => setIsMenuOpen(!isMenuOpen)} 
-    className="text-white"
-    whileTap={{ scale: 0.95 }}
-  >
-    <AnimatePresence mode="wait" initial={false}>
-      <motion.div
-        key={isMenuOpen ? "close" : "menu"}
-        initial={{ opacity: 0, rotate: -180 }}
-        animate={{ opacity: 1, rotate: 0 }}
-        exit={{ opacity: 0, rotate: 180 }}
-        transition={{ duration: 0.3 }}
-      >
-        {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-      </motion.div>
-    </AnimatePresence>
-  </motion.button>
-</div>
+        <motion.button 
+          onClick={() => setIsMenuOpen(!isMenuOpen)} 
+          className="text-white"
+          whileTap={{ scale: 0.95 }} >
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={isMenuOpen ? "close" : "menu"}
+              initial={{ opacity: 0, rotate: -180 }}
+              animate={{ opacity: 1, rotate: 0 }}
+              exit={{ opacity: 0, rotate: 180 }}
+              transition={{ duration: 0.3 }} >
+              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </motion.div>
+          </AnimatePresence>
+        </motion.button>
+      </div>
     <AnimatePresence>
       {(isMenuOpen || window.innerWidth >= 768) && (
         <motion.ul
@@ -160,31 +133,32 @@ const ProfilePage = () => {
         </nav>
       </header>
 
-      <main className="pt-20 relative z-10">
-        <section id="about" className="h-screen flex flex-col justify-center items-center text-center p-4 relative overflow-hidden" style={{ maxHeight: '90vh' }}>
+      <main className="pt-20 relative z-10" style={{ paddingTop: `${headerHeight}px` }}>
+        <section id="about" className="h-screen flex flex-col justify-center items-center text-center p-4 relative overflow-hidden" style={{ height: `calc(100vh - ${headerHeight}px)` }} >
           <motion.h2 
             className="text-4xl md:text-6xl font-bold mb-4 relative flex items-center justify-center"
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <motion.span 
-              className="inline-block mr-2"
-              whileHover={{ scale: 1.05 }}
-            >
+            <motion.span className="inline-block mr-2" whileHover={{ scale: 1.05 }}>
               Hello,
             </motion.span>{' '}
-            <motion.span 
-              className="inline-block mr-2"
-              whileHover={{ scale: 1.05 }}
-            >
+            <motion.span className="inline-block mr-2" whileHover={{ scale: 1.05 }}>
               I'm
             </motion.span>{' '}
             <motion.div className="relative inline-flex items-center">
               <motion.span
                 className="inline-block overflow-hidden whitespace-nowrap"
-                animate={controls}
-                initial={{ width: 0 }}
+                animate={{ 
+                  width: ['0%', '100%', '100%', '0%'],
+                  transition: {
+                    duration: 4,
+                    times: [0, 0.25, 0.75, 1],
+                    repeat: Infinity,
+                    repeatDelay: 1
+                  }
+                }}
                 style={{ paddingLeft: "0.5rem" }}
               >
                 Josh
@@ -195,8 +169,8 @@ const ProfilePage = () => {
                 transition={{ duration: 0.5, repeat: Infinity, repeatType: 'reverse' }}
               />
             </motion.div>
-          </motion.h2>
-          
+          </motion.h2>   
+
           <motion.p 
             className="text-lg md:text-xl mb-8 relative"
             initial={{ opacity: 0 }}
@@ -278,7 +252,7 @@ const ProfilePage = () => {
       </div>        
         </section>
 
-        <section id="interests" className="min-h-screen flex flex-col justify-center items-center p-4 bg-gray-800 bg-opacity-50">
+        <section id="interests" className="min-h-screen flex flex-col justify-center items-center p-4 bg-gray-800 bg-opacity-50" style={{ paddingTop: `${headerHeight + 50}px` }}>
           <h2 className="text-4xl font-bold mb-8">My Interests</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl">
             <InterestCard 
@@ -302,18 +276,14 @@ const ProfilePage = () => {
             />
           </div>
           <Link
-        to="/about"
-        onClick={(e) => {
-          e.preventDefault();
-          handleNavigation('/about');
-        }}
-        className="mt-12 inline-block bg-blue-500 text-white px-6 py-3 rounded-full hover:bg-blue-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
-      >
-        More about me
-      </Link>
+    to="/about"
+    className="mt-12 inline-block bg-blue-500 text-white px-6 py-3 rounded-full hover:bg-blue-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+  >
+    More about me
+  </Link>
         </section>
 
-        <section id="projects" className="min-h-screen flex flex-col justify-center items-center p-4 bg-opacity-50">
+        <section id="projects" className="scroll-margin min-h-screen flex flex-col justify-center items-center p-4 bg-opacity-50" style={{ paddingTop: `${headerHeight}px` }}>
           <h2 className="text-4xl font-bold mb-8">My Projects</h2>
           <p className="text-xl mb-4">Check out some of my recent work:</p>
           <div className="w-full max-w-4xl">
@@ -327,7 +297,7 @@ const ProfilePage = () => {
           </Link>
         </section>
 
-        <section id="socials" className="min-h-screen flex flex-col justify-center items-center p-4 bg-gray-800 bg-opacity-50">
+        <section id="socials" className="scroll-margin min-h-screen flex flex-col justify-center items-center p-4 bg-gray-800 bg-opacity-50" style={{ paddingTop: `${headerHeight}px` }}>
           <h2 className="text-4xl font-bold mb-8">Socials</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-8 max-w-4xl">
             {socials.map((social, index) => (
@@ -348,7 +318,7 @@ const ProfilePage = () => {
         </section>
       </main>
 
-      <footer className="bg-gray-800 text-center p-4 flex-shrink-0">
+     <footer className="absolute bottom-0 w-full bg-gray-800 text-center p-4">
         <p>&copy; 2024 Joshua Gilgallon. All rights reserved.</p>
       </footer>
 
