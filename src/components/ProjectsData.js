@@ -26,7 +26,16 @@ const projectsData = [
     linkName: null,
     link: null,
   },
-  // Add more projects here
+  { id: "Lex",
+    title: "Lex bot",
+    briefDescription: "A comprehensive multi-purpose discord bot.",
+    lengthyDescription: "Lex Bot is a multi-purpose Discord bot I created to improve on the current options out there. Tired of dealing with expensive subscriptions and limited free features, I built Lex Bot as a one-time payment solution that’s self-sustaining through small, affordable payments. It’s designed to be ultra-fast, reliable, and packed with features, making it a high-quality alternative to other bots. We focused on all the little details to ensure it runs smoothly and meets the needs of different types of Discord servers, aiming to usher in a new era of bots.",
+    image: null,
+    technologies: ["Discord.py", "Azure", "Python"],
+    outcome: "We partnered with many large discord servers establishing a user-base of approximately 20,000. I aim to further update and work on this project going into the future and can only hope for more support from other communities.",
+    linkName: "Lex website",
+    link: "https://lexdc.app", 
+  }
 ];
 
 export default projectsData;
